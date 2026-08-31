@@ -1,0 +1,28 @@
+# ---- Embedded build artifacts ----
+# PlatformIO (ESP32)
+.pio/
+# PSoC Creator generated / build output
+Generated_Source/
+codegentemp/
+Export/
+Debug/
+Release/
+CortexM3/
+*.cyfit
+*.rpt
+*.svd
+*.log
+
+# ---- MATLAB ----
+*.asv          # autosave
+*.mexw*        # compiled
+# Measured datasets and binary figures are kept out of the repo to stay lightweight.
+# Remove these two lines if you want to version a small sample dataset.
+*.mat
+*.fig
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
