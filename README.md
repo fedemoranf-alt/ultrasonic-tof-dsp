@@ -13,9 +13,17 @@ Engineering; the platform was published at **IEEE CHILECON 2025**.
 
 ![Ultrasonic ToF processing pipeline](docs/img/acquisition-diagram.png)
 
-*Processing chain, from the receiver transducer to the time-of-flight estimate: analog
-signal conditioning → ADC → bandpass filter → Hilbert/envelope → envelope derivative →
-cross-correlation with a reference template → peak location → ToF.*
+*Digital processing chain: ADC sampling → bandpass filter → Hilbert (quadrature) →
+envelope calculation → smoothing → envelope derivative → cross-correlation with a
+reference pattern → maximum-peak search → time-of-flight.*
+
+> [!IMPORTANT]
+> **📄 The best way to understand this project is the full write-up.**
+>
+> - **[▸ IEEE CHILECON 2025 paper](docs/ieee-chilecon-2025.pdf)** — peer-reviewed, in English. The concise overview of the platform, methods and results.
+> - **[▸ Full thesis](docs/thesis-ultrasonic-flowmeter.pdf)** — the complete design, DSP derivations, experimental setup and validation (in Spanish).
+>
+> Everything below is a summary; the paper and thesis carry the reasoning and the detailed results.
 
 ---
 
@@ -60,12 +68,15 @@ interpolation and low-pass FIR reconstruction.*
 
 1. **Acquisition** — PSoC 5LP ADC + **DMA**, bandpass sampling at **800 kS/s**.
 2. **Reconstruction** — interpolation (factor **M = 25**) + **low-pass FIR** (128 taps),
-   running in real time on the ESP32 (ARM/ESP-DSP routines).
+   running in real time on the ESP32.
 3. **Envelope + derivative** — envelope detection and its derivative to sharpen the echo.
 4. **Detection** — **cross-correlation** against a reference template, with sub-sample
    peak interpolation → time-delay (ToF) estimate.
 5. **Flow velocity** — upstream/downstream ToF difference → flow velocity, via a
    least-squares fit.
+6. **IoT logging** — the ESP32 computes per-measurement statistics and uploads them over
+   WiFi to a **ThingSpeak** cloud channel; a companion Python script logs the raw serial
+   stream to CSV.
 
 ![Envelope-derivative cross-correlation](docs/img/envelope-derivative-correlation.jpg)
 
@@ -82,15 +93,19 @@ ultrasonic-tof-dsp/
 │       ├── comp_SNR/           comparison of 5 detection algorithms vs SNR (white noise)
 │       └── medidas_paper/      scripts that generate the IEEE-paper figures
 ├── firmware/
-│   ├── esp32/              ESP-IDF (PlatformIO) — UART link + reconstruction FIR
+│   ├── esp32/              ESP32 (Arduino / PlatformIO)
+│   │   ├── src/main.cpp        reconstruction FIR, statistics, WiFi + ThingSpeak upload
+│   │   ├── python_datalogger/  Python serial logger (captures measurements to CSV)
+│   │   └── uart_python/        Python UART tools (send/receive templates to the PSoC)
 │   └── psoc/               PSoC 5LP — ADC/DMA acquisition + CMSIS-DSP correlation
-└── docs/                   thesis and publication references
+└── docs/                   thesis, publication and figures
 ```
 
 ## Tech stack
 
-**MATLAB** · **C (real-time embedded)** · **ARM CMSIS-DSP** · **FreeRTOS / ESP-IDF** ·
-**PSoC Creator** · ADC/DAC · **DMA** · UART.
+**MATLAB** · **C / C++ (real-time embedded)** · **ARM CMSIS-DSP** · **PSoC Creator** ·
+**ESP32 / Arduino** · **Python** (serial datalogging) · **ThingSpeak** (IoT) ·
+ADC/DAC · **DMA** · UART.
 
 ## Notes
 
@@ -100,6 +115,8 @@ ultrasonic-tof-dsp/
   be provided on request.
 - See [`firmware/psoc/README.md`](firmware/psoc/README.md) for how the PSoC project is
   organised and its CMSIS-DSP dependency.
+- The WiFi and ThingSpeak credentials in the ESP32 firmware are placeholders
+  (`YOUR_WIFI_SSID`, `YOUR_THINGSPEAK_WRITE_API_KEY`, …) — set your own before flashing.
 
 ## Author
 

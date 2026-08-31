@@ -21,6 +21,11 @@ CortexM3/
 *.mat
 *.fig
 
+# ---- Data / secrets ----
+*.csv                  # raw datalogger captures
+credentials.h          # keep real WiFi / ThingSpeak keys out of the repo
+secrets.h
+
 # ---- OS / editor ----
 .DS_Store
 Thumbs.db
