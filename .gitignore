@@ -14,16 +14,20 @@ CortexM3/
 *.log
 
 # ---- MATLAB ----
-*.asv          # autosave
-*.mexw*        # compiled
+# autosave
+*.asv
+# compiled
+*.mexw*
 # Measured datasets and binary figures are kept out of the repo to stay lightweight.
 # Remove these two lines if you want to version a small sample dataset.
 *.mat
 *.fig
 
 # ---- Data / secrets ----
-*.csv                  # raw datalogger captures
-credentials.h          # keep real WiFi / ThingSpeak keys out of the repo
+# raw datalogger captures
+*.csv
+# keep real WiFi / ThingSpeak keys out of the repo
+credentials.h
 secrets.h
 
 # ---- OS / editor ----
@@ -31,3 +35,6 @@ secrets.h
 Thumbs.db
 desktop.ini
 *~
+
+# ---- Host DSP tests ----
+dsp/build/

@@ -1,0 +1,26 @@
+name: DSP tests
+
+# Runs on every push and every pull request. The embedded builds (PSoC Creator,
+# PlatformIO) are not run here - only the hardware-independent DSP kernels,
+# which is exactly the part that can be verified without a board.
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit-tests:
+    name: Unit tests (gcc, warnings as errors, sanitizers)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Show compiler version
+        run: cc --version
+
+      - name: Build and run the unit tests, treating warnings as errors
+        run: make -C dsp strict
+
+      - name: Re-run under AddressSanitizer and UndefinedBehaviorSanitizer
+        run: make -C dsp sanitize
