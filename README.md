@@ -1,5 +1,7 @@
 # Ultrasonic Time-of-Flight DSP — Real-Time Signal Detection in Noise
 
+![DSP tests](https://github.com/fedemoranf-alt/ultrasonic-tof-dsp/actions/workflows/dsp-tests.yml/badge.svg)
+
 Real-time ultrasonic **time-of-flight (ToF)** measurement for a low-cost IoT flowmeter.
 The system recovers a **known ultrasonic echo from noisy real-world signals** and
 estimates its arrival time to **sub-sample precision**, running on embedded hardware
